@@ -30,6 +30,8 @@ public class ContratModel implements Serializable,Cloneable {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	private String name;
+	
 	@Temporal(TemporalType.DATE)
 	@Column(name="cm_du")
 	private Date du;
@@ -59,6 +61,8 @@ public class ContratModel implements Serializable,Cloneable {
 	private String occurenceFacturationLabel;
 	
 	private Boolean cloture;
+	
+	private Boolean deleteByUser;
 		
 	public ContratModel() {
 		this.echeances = new HashSet<Echeance>();
@@ -226,9 +230,10 @@ public class ContratModel implements Serializable,Cloneable {
 					c.setDu(start.toDate());
 					c.setContratModel(this);
 					c.setCloture(false);
+					c.setNomModele(this.name);
 					DateTime dateBetween = start.plusMonths(nbMonthPeriod);
 					start = dateBetween;
-					c.setAu(start.plusHours(-1).plusMinutes(59).plusSeconds(59).toDate());
+					c.setAu(start.plusDays(-1).toDate());
 					c.setMontant(this.getMontant());
 					c.setMontantRestFacture(c.getMontant());
 					c.setMontantFacture(0.0);
@@ -320,6 +325,26 @@ public class ContratModel implements Serializable,Cloneable {
 		} else if (!periodeFacturationLabel.equals(other.periodeFacturationLabel))
 			return false;
 		return true;
+	}
+
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public Boolean getDeleteByUser() {
+		return deleteByUser;
+	}
+
+
+	public void setDeleteByUser(Boolean deleteByUser) {
+		this.deleteByUser = deleteByUser;
 	}
 
 	

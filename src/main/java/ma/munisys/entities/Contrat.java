@@ -130,6 +130,20 @@ public class Contrat implements Serializable,Cloneable {
 	
 	private Date lastUpdate;
 	
+	private String bu;
+	
+	private boolean reconductionTacite;
+	
+	private Integer nbEcheancesNonFactureEnRetard;
+	
+	private String statutContrat;
+	
+	//mois
+	private Integer delaiPreavis;
+	
+	@Column(columnDefinition = "TEXT")
+	private String info;
+	
 	
 	public Contrat() {
 		this.factures = new HashSet<Facture>();
@@ -807,43 +821,84 @@ public class Contrat implements Serializable,Cloneable {
 	public void setContratsModel(Set<ContratModel> contratsModel) {
 		this.contratsModel = contratsModel;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 
 
 
-	
-	
-	
-	
-	
-	
-	
-	
+	public String getBu() {
+		return bu;
+	}
 
 
 
-	
-
-
-	
-
-	
+	public void setBu(String bu) {
+		this.bu = bu;
+	}
 
 
 
+	public boolean isReconductionTacite() {
+		return reconductionTacite;
+	}
 
-	
 
-	
-	
-	
+
+	public void setReconductionTacite(boolean reconductionTacite) {
+		this.reconductionTacite = reconductionTacite;
+	}
+
+
+
+	public int getNbEcheancesNonFactureEnRetard() {
+		return nbEcheancesNonFactureEnRetard;
+	}
+
+
+
+	public void setNbEcheancesNonFactureEnRetard(int nbEcheancesNonFactureEnRetard) {
+		this.nbEcheancesNonFactureEnRetard = nbEcheancesNonFactureEnRetard;
+	}
+
+
+
+	public String getStatutContrat() {
+		return statutContrat;
+	}
+
+
+
+	public void setStatutContrat(String statutContrat) {
+		this.statutContrat = statutContrat;
+	}
+
+
+
+	public void setNbEcheancesNonFactureEnRetard(Integer nbEcheancesNonFactureEnRetard) {
+		this.nbEcheancesNonFactureEnRetard = nbEcheancesNonFactureEnRetard;
+	}
+
+
+
+	public String getInfo() {
+		return info;
+	}
+
+
+
+	public void setInfo(String info) {
+		this.info = info;
+	}
+
+
+
+	public Integer getDelaiPreavis() {
+		return delaiPreavis;
+	}
+
+
+
+	public void setDelaiPreavis(Integer delaiPreavis) {
+		this.delaiPreavis = delaiPreavis;
+	}
 	
 	
 

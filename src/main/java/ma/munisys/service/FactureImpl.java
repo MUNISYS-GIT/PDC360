@@ -80,7 +80,7 @@ public class FactureImpl implements FactureService {
 			java.sql.ResultSetMetaData rsmd = rs1.getMetaData();
 			for (int columnCount = rsmd.getColumnCount(), i = 1; i <= columnCount; ++i) {
 				final String name = rsmd.getColumnName(i);
-				System.out.println("column Name " + name);
+				//System.out.println("column Name " + name);
 			}
 			SimpleDateFormat sp = new SimpleDateFormat("yyyy-MM-dd");
 			Contrat contrat = null;
@@ -139,7 +139,7 @@ public class FactureImpl implements FactureService {
 			factureRepository.saveAll(factures);
 
 			for (Facture f : factures) {
-				System.out.println("numFacture " + f.getNumFacture());
+				//System.out.println("numFacture " + f.getNumFacture());
 			
 				Collection<FactureEcheance> factureEcheances = factureEcheanceRepository.getFactureEcheance(f.getContrat().getNumContrat(), f.getNumFacture());
 				
@@ -185,7 +185,16 @@ public class FactureImpl implements FactureService {
 							fe.setCloture(false);
 							fe.setMontant(f.getMontantHT());
 							
-							if(!factureEcheancesAffectedByUser.contains(fe.getId())) {
+							boolean found=false;
+							for(Echeance e : f.getContrat().getEcheances()) {
+								String idFactEcheance = f.getNumFacture() + "/" + e.getId() + "/" + f.getContrat().getNumContrat();
+								if(factureEcheancesAffectedByUser.contains(idFactEcheance)) {
+									found=true;
+									break;
+								}
+							}
+							
+							if(!found) {
 								factureEcheanceRepository.saveAndFlush(fe);
 							}
 						
@@ -199,12 +208,19 @@ public class FactureImpl implements FactureService {
 			for (Contrat c : contratRepository.findAll()) {
 
 				for (FactureEcheance fe : c.getFactureEcheances()) {
-
-					Echeance e = fe.getEcheance();
-					if (e != null && !e.getCloture()) {
-						e.calculMontantFacture();
-						echeanceRepository.saveAndFlush(e);
+					
+					if(fe.getEcheance()!=null && !fe.getEcheance().getCloture()) {
+						Collection<FactureEcheance> factureEcheances = factureEcheanceRepository.getFactureEcheance(fe.getEcheance().getId());
+						if(factureEcheances!=null) {
+							fe.getEcheance().setFactureEcheances(new HashSet<>(factureEcheances));
+							fe.getEcheance().calculMontantFacture();
+							echeanceRepository.saveAndFlush(fe.getEcheance());
+						}
+					
 					}
+					
+					
+					
 				}
 
 				Double montantFactureAn = factureRepository.sumAmountContrat(c.getNumContrat(), currentYear);
@@ -312,7 +328,6 @@ public class FactureImpl implements FactureService {
 	}
 
 	@Override
-	@Transactional
 	public FactureEcheance updateFactureEcheance(Long numContrat, FactureEcheance factureEcheance) {
 
 		FactureEcheance fe=null;
@@ -349,7 +364,7 @@ public class FactureImpl implements FactureService {
 			
 			if(factureEcheance.getEcheance()!=null ) {
 				
-				factureEcheance.setId(factureEcheance.getFacture().getNumFacture() + "/"
+				factureEcheance.setId(factureEcheance.getFacture().getNumFacture()
 						+ "/"+ factureEcheance.getEcheance().getId()+ "/" + factureEcheance.getContrat().getNumContrat());	
 				
 				
@@ -371,6 +386,7 @@ public class FactureImpl implements FactureService {
 
 					e2.getFactureEcheances().add(factureEcheance);
 					e2.calculMontantFacture();
+					e2.setMontantRestFacture(0.0);
 					factureEcheance.setEcheance(e2);
 					echeanceRepository.save(e2);
 				}
@@ -387,11 +403,11 @@ public class FactureImpl implements FactureService {
 		if (sortBy != null) {
 
 			if ("asc".equals(sortType)) {
-				return factureEcheanceRepository.getFactureEcheance(numContrat,
+				return factureEcheanceRepository.getFactureEcheanceWithoutOrder(numContrat,
 						PageRequest.of(page, size, Sort.by(sortBy).ascending()));
 
 			} else {
-				return factureEcheanceRepository.getFactureEcheance(numContrat,
+				return factureEcheanceRepository.getFactureEcheanceWithoutOrder(numContrat,
 						PageRequest.of(page, size, Sort.by(sortBy).descending()));
 			}
 
@@ -401,7 +417,6 @@ public class FactureImpl implements FactureService {
 	}
 
 	@Override
-	@javax.transaction.Transactional
 	public void loadFactureFromSapByContrat(Long numContrat) {
 
 		LOGGER.info("load facture from SAP for contrat " + numContrat);
@@ -498,6 +513,8 @@ public class FactureImpl implements FactureService {
 						fe.setFacture(f);
 						fe.setMontant(f.getMontantHT());
 						fe.setEcheance(e);
+						e.setMontantRestFacture(0.0);
+						echeanceRepository.saveAndFlush(e);
 						fe.setCloture(false);
 
 						if (lastFactureEcheance == null || !lastFactureEcheance.isAffectedByUser()) {
@@ -540,14 +557,18 @@ public class FactureImpl implements FactureService {
 				Contrat c = contratRepository.findById(contrat.getNumContrat()).orElse(null);
 
 				for (FactureEcheance fe : c.getFactureEcheances()) {
-
-					Echeance e = fe.getEcheance();
-					if (e != null && !e.getCloture()) {
-						e.calculMontantFacture();
-						echeanceRepository.saveAndFlush(e);
+					if(fe.getEcheance()!=null) {
+						Collection<FactureEcheance> factureEcheances = factureEcheanceRepository.getFactureEcheance(fe.getEcheance().getId());
+						if(factureEcheances!=null && !fe.getEcheance().getCloture()) {
+							fe.getEcheance().setFactureEcheances(new HashSet<>(factureEcheances));
+							fe.getEcheance().calculMontantFacture();
+							echeanceRepository.saveAndFlush(fe.getEcheance());
+						}
+					
 					}
 				}
-
+						
+					
 				Double montantFactureAn = factureRepository.sumAmountContrat(c.getNumContrat(), currentYear);
 
 				if (montantFactureAn != null) {
@@ -575,7 +596,7 @@ public class FactureImpl implements FactureService {
 					}
 				}
 
-				contratRepository.save(c);
+				contratRepository.saveAndFlush(c);
 			}
 			// }
 

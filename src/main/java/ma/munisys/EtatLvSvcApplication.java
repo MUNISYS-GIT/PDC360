@@ -10,6 +10,8 @@ import ma.munisys.sap.dao.DBA;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+
+import ma.munisys.entities.Contrat;
 import ma.munisys.entities.Document;
 import ma.munisys.entities.EtatRecouvrement;
 import ma.munisys.entities.FactureEcheance;
@@ -154,11 +156,13 @@ public class EtatLvSvcApplication extends SpringBootServletInitializer implement
 		
 		//EtatLvSvcApplication.loadProduitDEPFromSap();
 		//EtatLvSvcApplication.loadStockFromSap();
+		//EtatLvSvcApplication.loadFromSap();
 		//commandeFournisseurServiceStatic.loadCommandeFournisseurFromSap();
 		//EtatLvSvcApplication.loadFromSap3();
 		//factureServiceStatic.loadFactureFromSap2();
 		//EtatLvSvcApplication.loadFromSap3();
 		//EtatLvSvcApplication.loadContrat();
+		//loadFromSap();
 		//EtatLvSvcApplication.factureServiceStatic.loadFactureFromSapByContrat(1L);
 		//System.out.println("end");
 		//factureServiceStatic.loadFactureFromSap();
@@ -167,8 +171,7 @@ public class EtatLvSvcApplication extends SpringBootServletInitializer implement
 		/*CompletableFuture<String> pieces =EtatLvSvcApplication.contratServiceStatic.loadContratPieceSap();
 		CompletableFuture<String> factures =factureServiceStatic.loadFactureFromSap();
 		CompletableFuture<String> commandes =commandeFournisseurServiceStatic.loadCommandeFournisseurFromSap();
-		
-		
+
 		CompletableFuture.allOf(contrats,pieces,commandes,factures).join();*/
 		//loadDocumentsFromSap();
 		//factureRepository.deleteAll();
@@ -185,7 +188,7 @@ public class EtatLvSvcApplication extends SpringBootServletInitializer implement
 		//LOGGER.debug("STARTING TASK Projetcts CRON ");
 		// loadProjetsFromSap();
 		etatProjetServiceStatic.loadProjetsFromSap();
-		// loadDocumentsFromSap();
+		loadDocumentsFromSap();
 		//LOGGER.debug("ENDING TASK Projects CRON ");
 	}
 
@@ -194,7 +197,7 @@ public class EtatLvSvcApplication extends SpringBootServletInitializer implement
 		//LOGGER.debug("STARTING TASK Docuemtns CRON ");
 		// loadProjetsFromSap();
 		// etatProjetServiceStatic.loadProjetsFromSap();
-		loadDocumentsFromSap();
+		//loadDocumentsFromSap();
 		//LOGGER.debug("ENDING TASK Documents CRON ");
 	}
 	
@@ -207,15 +210,16 @@ public class EtatLvSvcApplication extends SpringBootServletInitializer implement
 		//LOGGER.debug("ENDING TASK Projects CRON ");
 	}
 
-	@Scheduled(cron = "0 0 21 * * *")
+	@Scheduled(cron = "0 05 13 * * *")
 	public static void loadContrat() {
 		LOGGER.debug("STARTING TASK synchro contrat  ");
 		EtatLvSvcApplication.contratServiceStatic.loadContratFromSap();
-	
+		
+		//EtatLvSvcApplication.contratServiceStatic.generateEcheanceFromModels();
 		EtatLvSvcApplication.contratServiceStatic.loadContratPieceSap();
 		factureServiceStatic.loadFactureFromSap();
 		commandeFournisseurServiceStatic.loadCommandeFournisseurFromSap();
-	
+		
 		//CompletableFuture.allOf(contrats,pieces,commandes,factures).join();
 		LOGGER.debug("ENDING TASK synchro contrat");
 	}

@@ -19,11 +19,20 @@ public interface EcheanceService {
 	
 	public int addNewContratModel(Long numContrat, Echeance e);
 	
-	public void deleteEcheance(Long idEcheance);
+	public void deleteModele(Long idModele);
+	
+	public void deleteEcheance(Long idEcheance,boolean byUser);
 	
 	public Collection<Echeance> getAllEcheancesFromContrat(Long numContrat);
 	
 	public Page<Echeance> getEcheance(Long numContrat ,int page,int size,String sortBy,String sortType);
+
+	
+	public Page<Echeance> getEcheanceNotLinked(Long numContrat ,int page,int size,String sortBy,String sortType);
+
+	public Page<Echeance> getEcheancesNotLinked(String date,int page,int size,String sortBy,String sortType);
+
+	public Page<Echeance> getEcheanceLinked(Long numContrat ,int page,int size,String sortBy,String sortType);
 
 
 	public Echeance addNewEcheanceByUser(Long numContrat, Echeance echeance);

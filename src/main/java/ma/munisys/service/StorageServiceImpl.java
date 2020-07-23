@@ -1045,9 +1045,11 @@ public class StorageServiceImpl {
 		return workbook;
 
 	}
+
 	
 	public Workbook generateWorkBookRdv(Collection<DetailRdv> detailRdvs,Collection<DetailRdv> detailRdvsDep) {
 	
+
 		Workbook workbook = new XSSFWorkbook();
 
 		// Create a Sheet
@@ -1099,10 +1101,11 @@ public class StorageServiceImpl {
 		int rowNum1 = 1;
 		for (DetailRdv detail : detailRdvs) {
 			Row row = sheet.createRow(rowNum++);
-		
+
 			Cell cell0 = row.createCell(0);
 			if (detail.getCodeProjet() != null)
-				cell0.setCellValue(detail.getCodeProjet()); 
+				cell0.setCellValue(detail.getCodeProjet());
+
 
 
 			Cell cell1 = row.createCell(1);
@@ -1130,6 +1133,7 @@ public class StorageServiceImpl {
 				cell6.setCellValue(detail.getSousDomaine());
 			
 			Cell cell7 = row.createCell(7);
+
 			if (detail.getMarque() != null)
 				cell7.setCellValue(detail.getMarque());
 			
@@ -1563,6 +1567,97 @@ public class StorageServiceImpl {
 
 		return workbook;
 
+	}
+
+	public Workbook generateWorkBookEcheance(List<Echeance> echeances) {
+		String pattern2 = "dd/MM/yyyy";
+		DateFormat df = new SimpleDateFormat(pattern2);
+		
+		Workbook workbook = new XSSFWorkbook();
+
+//Create a Sheet
+		Sheet sheet2 = workbook.createSheet("Echeances");
+
+//Create a Font for styling header cells
+		Font headerFont = workbook.createFont();
+		headerFont.setBold(true);
+		headerFont.setFontHeightInPoints((short) 14);
+		headerFont.setColor(IndexedColors.BLUE.getIndex());
+
+//Create a CellStyle with the font
+		CellStyle headerCellStyle = workbook.createCellStyle();
+		headerCellStyle.setFont(headerFont);
+
+//Create a Row
+		Row headerRow1 = sheet2.createRow(0);
+
+		String[] columns2 = { "NumContrat", "Période Du", "Période Au", "Montant Prévisionnelle",
+				"Fréquence de facturation", "Périodicité", "N°factures", "Montant facturé", "Montant RAF",
+				"Commentaire" };
+
+//Create cells
+		for (int i = 0; i < columns2.length; i++) {
+			Cell cell = headerRow1.createCell(i);
+			cell.setCellValue(columns2[i]);
+			cell.setCellStyle(headerCellStyle);
+		}
+		int rowNum1 = 1;
+
+		if (echeances != null && !echeances.isEmpty())
+			for (Echeance echeance : echeances) {
+				Row row1 = sheet2.createRow(rowNum1++);
+
+				Cell cell11 = row1.createCell(0);
+				if (echeance.getContrat() != null && echeance.getContrat().getNumContrat() != null) {
+					cell11.setCellValue(echeance.getContrat().getNumContrat()); // Code Projet
+				}
+				Cell cell12 = row1.createCell(1);
+				if (echeance.getDu() != null)
+					cell12.setCellValue(df.format(echeance.getDu()));// Date CMD
+
+				Cell cell13 = row1.createCell(2);
+				if (echeance.getAu() != null)
+					cell13.setCellValue(df.format(echeance.getAu()));// Date CMD
+
+				Cell cell14 = row1.createCell(3);
+				cell14.setCellType(CellType.NUMERIC);
+				if (echeance.getMontantPrevision() != null)
+					cell14.setCellValue(echeance.getMontantPrevision());// Date CMD
+
+				Cell cell15 = row1.createCell(4);
+				if (echeance.getOccurenceFacturation() != null)
+					cell15.setCellValue(echeance.getOccurenceFacturation().toString());// Date CMD
+
+				Cell cell16 = row1.createCell(5);
+				if (echeance.getPeriodeFacturation() != null)
+					cell16.setCellValue(echeance.getPeriodeFacturation().toString());// Date CMD
+
+				Cell cell17 = row1.createCell(6);
+				if (echeance.getFactures() != null)
+					cell17.setCellValue(echeance.getFactures());// Date CMD
+
+				Cell cell18 = row1.createCell(7);
+				cell18.setCellType(CellType.NUMERIC);
+				if (echeance.getMontantFacture() != null)
+					cell18.setCellValue(echeance.getMontantFacture());// Date CMD
+
+				Cell cell19 = row1.createCell(8);
+				cell19.setCellType(CellType.NUMERIC);
+				if (echeance.getMontantRestFacture() != null)
+					cell19.setCellValue(echeance.getMontantRestFacture());// Date CMD
+
+				Cell cell110 = row1.createCell(9);
+				if (echeance.getCommentaire() != null)
+					cell110.setCellValue(echeance.getCommentaire().getComment());// Date CMD
+
+			}
+
+//Resize all columns to fit the content size
+		for (int i = 0; i < columns2.length; i++) {
+			sheet2.autoSizeColumn(i);
+		}
+
+		return workbook;
 	}
 
 }
