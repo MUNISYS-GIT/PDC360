@@ -29,6 +29,13 @@ public interface EtatProjetService {
 			 String commercial,String chefProjet,String client,String affectationChefProjet);
 	//public void checkIfProjetClotured(Projet projet);
 	
+	/*public Collection<Projet> getProjetsFromEtatProjetDep(Long idEtatProjet,
+			Boolean cloturer,
+			 String bu1, String bu2,
+			 String statut,
+			 String commercial,String chefProjet,String client,String affectationChefProjet);*/
+
+	
 	public Page<Projet> getProjetsFromEtatProjet(Boolean cloture,int page,int size);
 	
 	public Collection<Projet> getProjetFromEtatProjet(Boolean cloture,String bu1,String bu2);
@@ -77,6 +84,7 @@ public interface EtatProjetService {
 	public  void loadProjetsFromSap();
 	
 	public Collection<DetailRdv> getDetailRdvByCodeProjet(String codeProjet);
+	public Collection<DetailRdv> getDetailRdvDEPByCodeProjet(String codeProjet);
 	
 	public  Projet loadSingleProjetFromSap(String codeProjet);
 	
@@ -142,6 +150,9 @@ public interface EtatProjetService {
 	
 	
 	public List<String> getDistinctChefProjet();
+	
+	
+	public  void loadProjetsDepFromSap();
 	
 
 

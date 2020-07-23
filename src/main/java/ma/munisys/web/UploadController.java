@@ -198,49 +198,50 @@ public class UploadController {
 	
 	@PostMapping("/exportDetailRdv")
 	@ResponseBody
-	public ResponseEntity<Resource> exportDetailRdv( @RequestBody String codeProjet)  {
-		
-	    XSSFWorkbook workbook = null;
-	    Resource file = null;
-	    String fileName = null;
-	   
-	    try{
-	        /* Logic to Export Excel */
-	        LocalDateTime localDate = LocalDateTime.now();
-	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm"); 
-	        fileName = "RDV"+ "-" +codeProjet+"-"+ localDate.format(formatter) + ".xlsx";
-	   
-	        Collection<DetailRdv> detailRdvs=  etatProjetService.getDetailRdvByCodeProjet(codeProjet);
-	         
-	        OutputStream out;
-	        workbook = (XSSFWorkbook) storageService.generateWorkBookRdv(detailRdvs);
-	        
-	        FileOutputStream fileOut = new FileOutputStream("upload-dir/"+fileName);
-	        workbook.write(fileOut);
-	        fileOut.close();
-	        workbook.close();
-	        file = storageService.loadFile(fileName);
-	       
-	            
-	        } catch (Exception ecx) {
-	        	ecx.printStackTrace();
-	        }finally {
-	            if (null != workbook) {
-	                try {
-	                    workbook.close();
-	                     //file.getFile().delete(); 
-	                } catch (Exception e) {
-	                	e.printStackTrace();
-	                  //  logger.error("Error Occurred while exporting to XLS ", eio);
-	                }
-	            }
-	        }
-	    return ResponseEntity.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+	public ResponseEntity<Resource> exportDetailRdv(@RequestBody String codeProjet) {
+
+		XSSFWorkbook workbook = null;
+		Resource file = null;
+		String fileName = null;
+
+		try {
+			/* Logic to Export Excel */
+			LocalDateTime localDate = LocalDateTime.now();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
+			fileName = "RDV" + "-" + codeProjet.replace("/", "-") + "-" + localDate.format(formatter) + ".xlsx";
+
+			Collection<DetailRdv> detailRdvs = etatProjetService.getDetailRdvByCodeProjet(codeProjet);
+			Collection<DetailRdv> detailRdvsDep = etatProjetService.getDetailRdvDEPByCodeProjet(codeProjet);
+
+			
+			OutputStream out;
+			workbook = (XSSFWorkbook) storageService.generateWorkBookRdv(detailRdvs,detailRdvsDep);
+
+			FileOutputStream fileOut = new FileOutputStream("upload-dir/" + fileName);
+			workbook.write(fileOut);
+			fileOut.close();
+			workbook.close();
+			file = storageService.loadFile(fileName);
+
+		} catch (Exception ecx) {
+			ecx.printStackTrace();
+		} finally {
+			if (null != workbook) {
+				try {
+					workbook.close();
+					// file.getFile().delete();
+				} catch (Exception e) {
+					e.printStackTrace();
+					// logger.error("Error Occurred while exporting to XLS ", eio);
+				}
+			}
+		}
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
 				.body(file);
-	         
-	       
-	    }
+
+	}
+	
+	
 	
 	
 	@PostMapping("/exportDocumentsExcel")

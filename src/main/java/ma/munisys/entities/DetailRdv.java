@@ -20,6 +20,10 @@ public class DetailRdv {
 	
 	private String marque;
 	
+	private double prixAchat;
+	
+	private double prixVente;
+	
 	private Double montantAchat;
 	
 	private Double montantVente;
@@ -38,6 +42,10 @@ public class DetailRdv {
 	private Double montantRAL;
 	
 	private Double montantLNF;
+	
+	private String codeFrs;
+	
+	private String Frs;
 	
 	public DetailRdv() {
 		
@@ -186,6 +194,40 @@ public class DetailRdv {
 	public void setMarque(String marque) {
 		this.marque = marque;
 	}
+
+	public double getPrixAchat() {
+		return prixAchat;
+	}
+
+	public void setPrixAchat(double prixAchat) {
+		this.prixAchat = prixAchat;
+	}
+
+	public double getPrixVente() {
+		return prixVente;
+	}
+
+	public void setPrixVente(double prixVente) {
+		this.prixVente = prixVente;
+	}
+
+	public String getCodeFrs() {
+		return codeFrs;
+	}
+
+	public void setCodeFrs(String codeFrs) {
+		this.codeFrs = codeFrs;
+	}
+
+	public String getFrs() {
+		return Frs;
+	}
+
+	public void setFrs(String frs) {
+		Frs = frs;
+	}
+	
+	
 	
 
 }

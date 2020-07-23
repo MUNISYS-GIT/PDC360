@@ -78,6 +78,8 @@ public class Produit {
 	
 	@OneToOne
 	private AppUser updatedBy;
+	
+	private String type_magasin;
 
 	public Produit() {
 		this.commentaires = new HashSet<CommentaireProduit>();
@@ -312,6 +314,17 @@ public class Produit {
 
 	public void setUpdatedBy(AppUser updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	
+	
+	
+	public String getType_magasin() {
+		return type_magasin;
+	}
+
+	public void setType_magasin(String type_magasin) {
+		this.type_magasin = type_magasin;
 	}
 
 	@Override

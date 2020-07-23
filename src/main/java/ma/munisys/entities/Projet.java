@@ -97,7 +97,9 @@ public class Projet implements Serializable
     
     private String statutProjet;
     
+    private String type;
     
+    private String flag;
     
     public Projet() {
         this.commentaires = new HashSet<Commentaire>();
@@ -753,6 +755,24 @@ public class Projet implements Serializable
 	public void setStatutProjet(String statutProjet) {
 		this.statutProjet = statutProjet;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getFlag() {
+		return flag;
+	}
+
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
+	
+	
 	
 	
 

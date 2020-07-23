@@ -451,8 +451,8 @@ public class StorageServiceImpl {
 			Row row = sheet.createRow(rowNum++);
 
 			Cell cell0 = row.createCell(0);
-			if (produit.getMagasin() != null)
-				cell0.setCellValue(produit.getMagasin());
+			if (produit.getType_magasin() != null)
+				cell0.setCellValue(produit.getType_magasin());
 
 			System.out.println("NUM LOT " + produit);
 			Cell cell1 = row.createCell(1);
@@ -1046,12 +1046,13 @@ public class StorageServiceImpl {
 
 	}
 	
-	public Workbook generateWorkBookRdv(Collection<DetailRdv> detailRdvs) {
+	public Workbook generateWorkBookRdv(Collection<DetailRdv> detailRdvs,Collection<DetailRdv> detailRdvsDep) {
 	
 		Workbook workbook = new XSSFWorkbook();
 
 		// Create a Sheet
-		Sheet sheet = workbook.createSheet("DetailRDV");
+		Sheet sheet = workbook.createSheet("DetailRDV COM");
+		Sheet sheet2 = workbook.createSheet("DetailRDV DEP");
 
 		// Create a Font for styling header cells
 		Font headerFont = workbook.createFont();
@@ -1065,6 +1066,8 @@ public class StorageServiceImpl {
 
 		// Create a Row
 		Row headerRow = sheet.createRow(0);
+		
+		Row headerRow2 = sheet2.createRow(0);
 
 		// Create a Row Comment
 
@@ -1073,17 +1076,27 @@ public class StorageServiceImpl {
 		 * {"codeProjet","commentaire","date","utilisateur"};
 		 */
 
-		String[] columns = { "Code Projet","Nom Projet","Code Article","Designation","Nature","Sous Nature","Domaine","Sous Domaine","Marque","Montant d'achat","Montant de vente","Quantité","Quantité livrée","Qte RAL","Qte LNF","Montant Livré","Montant RAL","Montant LNF" };
+		String[] columns = { "Code Projet","Code Article","Designation","Nature","Sous Nature","Domaine","Sous Domaine","Marque","Quantité","Quantité livrée","Qte RAL","Montant RAL","P.U de vente","Montant de vente","P.U d'achat","Montant d'achat","Qte LNF","Montant LNF","Code Fournisseur","Nom Fournisseur" };
+		String[] columns2 = { "Code Projet","Code Article","Designation","Nature","Sous Nature","Domaine","Sous Domaine","Marque","Quantité","Quantité livrée","Qte RAL" };
 
+		
 		// Create cells
 		for (int i = 0; i < columns.length; i++) {
 			Cell cell = headerRow.createCell(i);
 			cell.setCellValue(columns[i]);
 			cell.setCellStyle(headerCellStyle);
 		}
+		
+		for (int i = 0; i < columns2.length; i++) {
+			Cell cell = headerRow2.createCell(i);
+			cell.setCellValue(columns2[i]);
+			cell.setCellStyle(headerCellStyle);
+		}
+
 
 		// Create Other rows and cells with employees data
 		int rowNum = 1;
+		int rowNum1 = 1;
 		for (DetailRdv detail : detailRdvs) {
 			Row row = sheet.createRow(rowNum++);
 		
@@ -1091,88 +1104,158 @@ public class StorageServiceImpl {
 			if (detail.getCodeProjet() != null)
 				cell0.setCellValue(detail.getCodeProjet()); 
 
+
 			Cell cell1 = row.createCell(1);
-			if (detail.getNomProjet() != null)
-				cell1.setCellValue(detail.getNomProjet()); 
+			if (detail.getItemCode() != null)
+				cell1.setCellValue(detail.getItemCode());
 
 			Cell cell2 = row.createCell(2);
-			if (detail.getItemCode() != null)
-				cell2.setCellValue(detail.getItemCode());
-
-			Cell cell3 = row.createCell(3);
 			if (detail.getDesignation() != null)
-				cell3.setCellValue(detail.getDesignation());
+				cell2.setCellValue(detail.getDesignation());
+			
+			Cell cell3 = row.createCell(3);
+			if (detail.getNature() != null)
+				cell3.setCellValue(detail.getNature());
 			
 			Cell cell4 = row.createCell(4);
-			if (detail.getNature() != null)
-				cell4.setCellValue(detail.getNature());
+			if (detail.getSousNature() != null)
+				cell4.setCellValue(detail.getSousNature());
 			
 			Cell cell5 = row.createCell(5);
-			if (detail.getSousNature() != null)
-				cell5.setCellValue(detail.getSousNature());
+			if (detail.getDomaine() != null)
+				cell5.setCellValue(detail.getDomaine());
 			
 			Cell cell6 = row.createCell(6);
-			if (detail.getDomaine() != null)
-				cell6.setCellValue(detail.getDomaine());
+			if (detail.getSousDomaine() != null)
+				cell6.setCellValue(detail.getSousDomaine());
 			
 			Cell cell7 = row.createCell(7);
-			if (detail.getSousDomaine() != null)
-				cell7.setCellValue(detail.getSousDomaine());
+			if (detail.getMarque() != null)
+				cell7.setCellValue(detail.getMarque());
 			
 			Cell cell8 = row.createCell(8);
-			if (detail.getMarque() != null)
-				cell8.setCellValue(detail.getMarque());
-
+			cell8.setCellType(CellType.NUMERIC);
+			if (detail.getQte() != null)
+				cell8.setCellValue(detail.getQte());// client
+			
 			Cell cell9 = row.createCell(9);
 			cell9.setCellType(CellType.NUMERIC);
-			cell9.setCellValue(detail.getMontantAchat());// Age (mois)
+			if (detail.getQteLiv() != null)
+				cell9.setCellValue(detail.getQteLiv());// commercial
 
 			Cell cell10 = row.createCell(10);
 			cell10.setCellType(CellType.NUMERIC);
-			if (detail.getMontantVente()!= null)
-				cell10.setCellValue(detail.getMontantVente());// Code Client
+			if (detail.getQteRAL() != null)
+				cell10.setCellValue(detail.getQteRAL());// chefprojet
+
 
 			Cell cell11 = row.createCell(11);
 			cell11.setCellType(CellType.NUMERIC);
-			if (detail.getQte() != null)
-				cell11.setCellValue(detail.getQte());// client
+			if (detail.getMontantRAL() != null)
+				cell11.setCellValue(detail.getMontantRAL());// ral
+			
+			Cell cell12 = row.createCell(12);
+			cell12.setCellType(CellType.NUMERIC);
+				cell12.setCellValue(detail.getPrixVente());
 
-			Cell celll2 = row.createCell(12);
-			celll2.setCellType(CellType.NUMERIC);
-			if (detail.getQteLiv() != null)
-				celll2.setCellValue(detail.getQteLiv());// commercial
-
-			Cell cell13 = row.createCell(13);
-			cell13.setCellType(CellType.NUMERIC);
-			if (detail.getQteRAL() != null)
-				cell13.setCellValue(detail.getQteRAL());// chefprojet
-
-			Cell cell14 = row.createCell(14);
-			cell14.setCellType(CellType.NUMERIC);
-			if (detail.getQteLNF() != null)
-				cell14.setCellValue(detail.getQteLNF());
-
+				Cell cell13 = row.createCell(13);
+				cell13.setCellType(CellType.NUMERIC);
+				cell13.setCellValue(detail.getMontantVente());				
+		
+				Cell cell14 = row.createCell(14);
+				cell14.setCellType(CellType.NUMERIC);
+				cell14.setCellValue(detail.getPrixAchat());
+					
 			Cell cell15 = row.createCell(15);
 			cell15.setCellType(CellType.NUMERIC);
-			if (detail.getMontantLiv() != null)
-				cell15.setCellValue(detail.getMontantLiv()); // mnt cmd
+			cell15.setCellValue(detail.getMontantAchat());// Age (mois)
+
+
+
 
 			Cell cell16 = row.createCell(16);
 			cell16.setCellType(CellType.NUMERIC);
-			if (detail.getMontantRAL() != null)
-				cell16.setCellValue(detail.getMontantRAL());// ral
+			if (detail.getQteLNF() != null)
+				cell16.setCellValue(detail.getQteLNF());
+
 
 			Cell cell17 = row.createCell(17);
 			cell17.setCellType(CellType.NUMERIC);
 			if (detail.getMontantLNF() != null)
-				cell17.setCellValue(detail.getMontantLNF());// liv
+			cell17.setCellValue(detail.getMontantLNF());// liv
+			
+			Cell cell18 = row.createCell(18);
+			if (detail.getCodeFrs() != null)
+				cell18.setCellValue(detail.getCodeFrs());
+			
+			Cell cell19 = row.createCell(19);
+			if (detail.getCodeFrs() != null)
+				cell19.setCellValue(detail.getFrs());
+
 		}
+		
+		for (DetailRdv detail : detailRdvsDep) {
+			Row row1 = sheet2.createRow(rowNum1++);
+		
+			Cell cell0 = row1.createCell(0);
+			if (detail.getCodeProjet() != null)
+				cell0.setCellValue(detail.getCodeProjet()); 
+
+
+			Cell cell1 = row1.createCell(1);
+			if (detail.getItemCode() != null)
+				cell1.setCellValue(detail.getItemCode());
+
+			Cell cell2 = row1.createCell(2);
+			if (detail.getDesignation() != null)
+				cell2.setCellValue(detail.getDesignation());
+			
+			Cell cell3 = row1.createCell(3);
+			if (detail.getNature() != null)
+				cell3.setCellValue(detail.getNature());
+			
+			Cell cell4 = row1.createCell(4);
+			if (detail.getSousNature() != null)
+				cell4.setCellValue(detail.getSousNature());
+			
+			Cell cell5 = row1.createCell(5);
+			if (detail.getDomaine() != null)
+				cell5.setCellValue(detail.getDomaine());
+			
+			Cell cell6 = row1.createCell(6);
+			if (detail.getSousDomaine() != null)
+				cell6.setCellValue(detail.getSousDomaine());
+			
+			Cell cell7 = row1.createCell(7);
+			if (detail.getMarque() != null)
+				cell7.setCellValue(detail.getMarque());
+			
+			Cell cell8 = row1.createCell(8);
+			cell8.setCellType(CellType.NUMERIC);
+			if (detail.getQte() != null)
+				cell8.setCellValue(detail.getQte());// client
+			
+			Cell cell9 = row1.createCell(9);
+			cell9.setCellType(CellType.NUMERIC);
+			if (detail.getQteLiv() != null)
+				cell9.setCellValue(detail.getQteLiv());// commercial
+
+			Cell cell10 = row1.createCell(10);
+			cell10.setCellType(CellType.NUMERIC);
+			if (detail.getQteRAL() != null)
+				cell10.setCellValue(detail.getQteRAL());// chefprojet
+
+		}
+		
 
 		// Resize all columns to fit the content size
 		for (int i = 0; i < columns.length; i++) {
 			sheet.autoSizeColumn(i);
 		}
 
+		for (int i = 0; i < columns2.length; i++) {
+			sheet2.autoSizeColumn(i);
+		}
 		return workbook;
 
 	}

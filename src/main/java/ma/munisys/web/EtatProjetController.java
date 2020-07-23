@@ -173,6 +173,17 @@ public class EtatProjetController {
 		}
 
 	}
+	
+	/*@RequestMapping(value = "/getProjetsDep", method = RequestMethod.GET)
+	public Collection<Projet> getProjetsDep(	@RequestParam(name = "idEtatProjet", defaultValue = "1") Long idEtatProjet,
+			@RequestParam(name = "cloturer", defaultValue = "false") Boolean cloturer,
+			@RequestParam(name = "bu1") String bu1, @RequestParam(name = "bu2") String bu2,
+			@RequestParam(name = "statut") String statut, 
+			@RequestParam(name = "commercial") String commercial,@RequestParam(name = "client") String client,@RequestParam(name = "chefProjet") String chefProjet
+			,@RequestParam(name="affectationChefProjet") String affectationChefProjet){
+		Collection<Projet> projets = null;
+		return etatProjetService.getProjetsFromEtatProjetDep(idEtatProjet, cloturer, bu1, bu2, statut, commercial, chefProjet, client,affectationChefProjet);
+	}*/
 
 	@RequestMapping(value = "/getProjectsWithStatut", method = RequestMethod.GET)
 	public Collection<Projet> getProjetsWithoutPagination(

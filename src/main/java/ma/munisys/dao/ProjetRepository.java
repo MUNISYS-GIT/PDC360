@@ -42,18 +42,28 @@ public interface ProjetRepository extends JpaRepository<Projet, String>,JpaSpeci
 	
 	@Query("select p from Projet p where p.cloture = :y  and p.chefProjet is null  order by p.client") 
 	public Collection<Projet> getProjetsByChefDeProjetIsNull(@Param("y") Boolean cloturer);
-	
+
+	@Query("select p from Projet p where p.cloture = :y  and p.chefProjet is null and p.type='DEP' order by p.client") 
+	public Collection<Projet> getProjetsByChefDeProjetIsNullDep(@Param("y") Boolean cloturer);
 	
 	@Query("select p from Projet p where p.cloture = :y  and p.chefProjet is null and p.commercial=:z  order by p.client") 
 	public Collection<Projet> getProjetsByChefDeProjetIsNullAndCommercial(@Param("y") Boolean cloturer,@Param("z")String commercial);
 	
+	@Query("select p from Projet p where p.cloture = :y  and p.chefProjet is null and p.commercial=:z and p.type='DEP'  order by p.client") 
+	public Collection<Projet> getProjetsByChefDeProjetIsNullAndCommercialDep(@Param("y") Boolean cloturer,@Param("z")String commercial);
+	
 	
 	@Query("select p from Projet p where p.cloture = :y  and p.chefProjet is not null order by p.client") 
 	public Collection<Projet> getProjetsByChefDeProjetNotNull(@Param("y") Boolean cloturer);
+	
+	@Query("select p from Projet p where p.cloture = :y  and p.chefProjet is not null and p.type='DEP' order by p.client") 
+	public Collection<Projet> getProjetsByChefDeProjetNotNullDep(@Param("y") Boolean cloturer);
 
 	@Query("select p from Projet p where p.cloture = :y  and p.chefProjet is not null and p.commercial=:z order by p.client") 
 	public Collection<Projet> getProjetsByChefDeProjetNotNullAndCommercial(@Param("y") Boolean cloturer,@Param("z")String commercial);
 
+	@Query("select p from Projet p where p.cloture = :y  and p.chefProjet is not null and p.commercial=:z and p.type='DEP' order by p.client") 
+	public Collection<Projet> getProjetsByChefDeProjetNotNullAndCommercialDep(@Param("y") Boolean cloturer,@Param("z")String commercial);
 
 	@Query("select p from Projet p where p.cloture = :y and  (p.bu = :z or p.bu = :u) and p.statut =:t order by p.client") 
 	public Collection<Projet> getProjetsByBuAndStatut(@Param("y") Boolean cloturer,@Param("z")String bu1,@Param("u")String bu2,@Param("t")String statut);
@@ -92,7 +102,7 @@ public interface ProjetRepository extends JpaRepository<Projet, String>,JpaSpeci
 	public Collection<Projet> getAllProjetsByCommercialOrChefProjet(@Param("y") Boolean cloturer,@Param("g") String commercialOrChefProjet);
 	
 	
-	@Query("select p from Projet p where p.cloture = :y  order by p.client")
+	@Query("select p from Projet p where p.cloture = :y order by p.client")
 	public Collection<Projet> getProjets(@Param("y") Boolean cloturer);
 	
 
@@ -127,6 +137,12 @@ public interface ProjetRepository extends JpaRepository<Projet, String>,JpaSpeci
 	
 	public int updateStatutProjetMontant(@Param("statut") boolean statut,@Param("cloturedByUser") boolean cloturedByUser,@Param("decloturedByUser") boolean decloturedByUser,@Param("facturation") Double facturation,@Param("lnf") Double lnf,@Param("lfp") Double lfp,@Param("ral") Double ral, @Param("codeProjet") String codeProjet);
 	
+	@Query("select p from Projet p where p.type='DEP' order by p.client")
+	public Collection<Projet> getProjetsDep();
+	
+	@Modifying
+	@Query(value="update Projet p set p.flag='Green' where p.codeProjet = :project")
+	public void updateFlag(@Param("project") String project);
 	
 	/*@Query(value="select p from Projet p where p.etatProjet.id = 1 and p.cloture = :y and p.commercial like :z or p.chefProjet like :z ")
 	public List<Projet> findAllProjetsByCommercialOrChefProjet(@Param("y") Boolean cloturer,@Param("z")String filtre )*/

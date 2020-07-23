@@ -54,6 +54,18 @@ public class BalanceAgeeController {
 	
 	}
 	
+	@RequestMapping(value = "/getBalanceByStatus", method = RequestMethod.GET)	
+	public Collection<String> FindByStatus(String[] status){
+		
+		return balanceAgeeService.FindByStatus(status);
+	}
+	
+	@RequestMapping(value = "/getBalanceByAM", method = RequestMethod.GET)	
+	public Collection<BalanceAgee> FindByAM(String client,String cr,String am){
+		
+		return balanceAgeeService.FindByAM(client,cr, am);
+	}
+	
 
 
 	

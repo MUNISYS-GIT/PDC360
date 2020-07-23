@@ -50,7 +50,7 @@ public class StockProjetSpecification {
 		System.out.println("MAGASIN BEFORE QUERY "+magasin);
 
 	     return (root, query, cb) -> {
-	         return cb.like(root.get("magasin"), magasin);
+	         return cb.like(root.get("type_magasin"), magasin);
 	     };
 	  }
 	
@@ -67,6 +67,13 @@ public class StockProjetSpecification {
 		
 	     return (root, query, cb) -> {
 	    	 return cb.equal(root.get("chef_projet"), cp);
+	     };
+	  }
+	
+	public static Specification<StockProjet> byType(String type) {
+		
+	     return (root, query, cb) -> {
+	    	 return cb.equal(root.get("type_magasin"), type);
 	     };
 	  }
 	

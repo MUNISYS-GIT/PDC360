@@ -38,14 +38,44 @@ public class StockProjetServiceImp implements StockProjetService {
 	
 	
 	@Override
-	public Collection<StockProjet> getStockProjetByFiltre(String numLot, String client, String annee, String magasin, String com,String cp){
+	public Collection<StockProjet> getStockProjetByFiltre(String numLot, String client, String annee, String magasin, String com,String cp,String type){
 		
 
 		
-	       if(numLot.equals("undefined") && client.equals("undefined") && annee.equals("undefined") && magasin.equals("undefined") && com.equals("undefined") && cp.equals("undefined")){
+	       if(numLot.equals("undefined") && client.equals("undefined") && annee.equals("undefined") && magasin.equals("undefined") && com.equals("undefined") && cp.equals("undefined") && type.contentEquals("undefined")){
 
 	        return stockProjetRepository.getStockProjet();
 	        
+	       }
+
+	       // filtre par type uniquement.  E
+	       if(numLot.equals("undefined") && client.equals("undefined") && annee.equals("undefined") && magasin.equals("undefined") && com.equals("undefined") && cp.equals("undefined") && !type.equals("undefined")){
+
+	        return stockProjetRepository.findAll(StockProjetSpecification.byType(type));
+	       }
+	       
+	       // filtre par type mag et numLot uniquement.  E
+	       if(!numLot.equals("undefined") && client.equals("undefined") && annee.equals("undefined") && magasin.equals("undefined") && com.equals("undefined") && cp.equals("undefined") && !type.equals("undefined")){
+
+	        return stockProjetRepository.findAll(StockProjetSpecification.byType(type).and(StockProjetSpecification.byNumLot(numLot)));
+	       }
+	       
+	       // filtre par client et numLot uniquement.  E
+	       if(numLot.equals("undefined") && !client.equals("undefined") && annee.equals("undefined") && magasin.equals("undefined") && com.equals("undefined") && cp.equals("undefined") && !type.equals("undefined")){
+
+	        return stockProjetRepository.findAll(StockProjetSpecification.byType(type).and(StockProjetSpecification.byClient(client)));
+	       }
+	       
+	       // filtre par com et numLot uniquement.  E
+	       if(numLot.equals("undefined") && client.equals("undefined") && annee.equals("undefined") && magasin.equals("undefined") && !com.equals("undefined") && cp.equals("undefined") && !type.equals("undefined")){
+
+	        return stockProjetRepository.findAll(StockProjetSpecification.byType(type).and(StockProjetSpecification.byCommercial(com)));
+	       }
+
+	       // filtre par com et numLot uniquement.  E
+	       if(numLot.equals("undefined") && client.equals("undefined") && annee.equals("undefined") && magasin.equals("undefined") && com.equals("undefined") && !cp.equals("undefined") && !type.equals("undefined")){
+
+	        return stockProjetRepository.findAll(StockProjetSpecification.byType(type).and(StockProjetSpecification.byChefProjet(cp)));
 	       }
 
 
@@ -82,13 +112,9 @@ public class StockProjetServiceImp implements StockProjetService {
 	       
 	       //filtre par magasin uniquement
 	       if(numLot.equals("undefined") && client.equals("undefined") && annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined") && cp.equals("undefined")){
-	    		   if(magasin.equals("Stock commercial")) {
-	    				return stockProjetRepository.getStockProjetByFiltre3(numLot,client,annee,com,cp);
-
-	    		   }
-	    	   	else {
+	    		
 		        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin));
-		       }
+		       
 	    		   }
 
 
@@ -116,44 +142,28 @@ public class StockProjetServiceImp implements StockProjetService {
 	       // filtre par annee et magasin.  AFG
 	       if(numLot.equals("undefined") && client.equals("undefined") && !annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined")  && cp.equals("undefined")){
 
-    		   if(magasin.equals("Stock commercial")) {
-    			   System.out.println("TEEST "+annee);
-    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-    		   }
-    	   	else {
+    
 	    	   
 	        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byAnnee(annee)));
-	       }
+	       
     		   }
 	       
 	       // filtre par NumLot et magasin.  AFG
 	       if(!numLot.equals("undefined") && client.equals("undefined") && annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined") && cp.equals("undefined")){
 
-    		   if(magasin.equals("Stock commercial")) {
-    			  System.out.println("NIVEAU STOCK COMMERCIAL ");
-    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-    		   }
-    	   	else {
-  			  System.out.println("NIVEAU AUTRE STOCK ");
 
 	        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byNumLot(numLot)));
-	       }
+	       
     		   }
 	       
 	       
 	       // filtre par Client et magasin.  AFG
 	       if(numLot.equals("undefined") && !client.equals("undefined") && annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined") && cp.equals("undefined")){
 
-    		   if(magasin.equals("Stock commercial")) {
-    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-    		   }
-    	   	else {
+    		
 	    	   
 	        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byClient(client)));
-	       }
+	       
     		   }
 	       
 	       // filtre par NumLot et année et client.  AFG
@@ -166,53 +176,37 @@ public class StockProjetServiceImp implements StockProjetService {
 	       // filtre par Année et numLot et magasin.  AFG
 	       if(!numLot.equals("undefined") && client.equals("undefined") && !annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined") && cp.equals("undefined")){
 
-    		   if(magasin.equals("Stock commercial")) {
-    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-    		   }
-    	   	else {
+    	
 	    	   
 	        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byAnnee(annee)).and(StockProjetSpecification.byNumLot(numLot)));
-	       }
+	       
     		   }
 	       
 	       // filtre par Année et client et magasin.  AFG
 	       if(numLot.equals("undefined") && !client.equals("undefined") && !annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined") && cp.equals("undefined")){
 
-    		   if(magasin.equals("Stock commercial")) {
-    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-    		   }
-    	   	else {
+    	
 	    	   
 	        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byAnnee(annee)).and(StockProjetSpecification.byClient(client)));
-	       }
+	       
     		   }
 	       
 	       // filtre par NumlOT et client et magasin.  AFG
 	       if(!numLot.equals("undefined") && client.equals("undefined") && !annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined") && cp.equals("undefined")){
 
-    		   if(magasin.equals("Stock commercial")) {
-    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-    		   }
-    	   	else {
+    	
 	    	   
 	        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byNumLot(numLot)).and(StockProjetSpecification.byClient(client)));
-	       }
+	       
     		   }
 	       
 	       // filtre par Tout.  AFG
 	       if(!numLot.equals("undefined") && !client.equals("undefined") && !annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined") && cp.equals("undefined")){
 
-    		   if(magasin.equals("Stock commercial")) {
-    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
 
-    		   }
-    	   	else {
 	    	   
 	        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byAnnee(annee)).and(StockProjetSpecification.byClient(client)).and(StockProjetSpecification.byNumLot(numLot)));
-	       }
+	       
     		   }
 	       
 	       
@@ -241,14 +235,9 @@ public class StockProjetServiceImp implements StockProjetService {
 				       // filtre par commercial et magasin.  AFG
 				       if(numLot.equals("undefined") && client.equals("undefined") && annee.equals("undefined") && !magasin.equals("undefined") && !com.equals("undefined") && cp.equals("undefined")){
 
-			    		   if(magasin.equals("Stock commercial")) {
-			    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-			    		   }
-			    	   	else {
-				    	   
+			    		 
 				        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byCommercial(com)));
-				       }
+				       
 			    		   }
 
 				        // filtre par commercial et année et numlot.  FG
@@ -267,14 +256,10 @@ public class StockProjetServiceImp implements StockProjetService {
 						       // filtre par année et commercial et magasin.  AFG
 						       if(numLot.equals("undefined") && client.equals("undefined") && !annee.equals("undefined") && !magasin.equals("undefined") && !com.equals("undefined") && cp.equals("undefined")){
 
-					    		   if(magasin.equals("Stock commercial")) {
-					    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-					    		   }
-					    	   	else {
+					    		  
 						    	   
 						        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byCommercial(com)).and(StockProjetSpecification.byAnnee(annee)));
-						       }
+						       
 					    		   }
 						       
 						        // filtre par commercial et code prj et client.  FG
@@ -286,66 +271,44 @@ public class StockProjetServiceImp implements StockProjetService {
 							       // filtre par cod prj et commercial et magasin.  AFG
 							       if(!numLot.equals("undefined") && client.equals("undefined") && annee.equals("undefined") && !magasin.equals("undefined") && !com.equals("undefined") && cp.equals("undefined")){
 
-						    		   if(magasin.equals("Stock commercial")) {
-						    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-						    		   }
-						    	   	else {
+						    		
 							    	   
 							        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byCommercial(com)).and(StockProjetSpecification.byNumLot(numLot)));
-							       }
+							       
 						    		   }	
 							       
 							       // filtre par client et commercial et magasin.  AFG
 							       if(numLot.equals("undefined") && !client.equals("undefined") && annee.equals("undefined") && !magasin.equals("undefined") && !com.equals("undefined") && cp.equals("undefined")){
 
-						    		   if(magasin.equals("Stock commercial")) {
-						    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-						    		   }
-						    	   	else {
+						    		 
 							    	   
 							        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byCommercial(com)).and(StockProjetSpecification.byClient(client)));
-							       }
+							       
 						    		   }
 							       
 							       // filtre par année et commercial et magasin et client.  AFG
 							       if(numLot.equals("undefined") && !client.equals("undefined") && !annee.equals("undefined") && !magasin.equals("undefined") && !com.equals("undefined") && cp.equals("undefined")){
 
-						    		   if(magasin.equals("Stock commercial")) {
-						    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-						    		   }
-						    	   	else {
 							    	   
 							        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byCommercial(com)).and(StockProjetSpecification.byAnnee(annee)).and(StockProjetSpecification.byClient(client)));
-							       }
+							       
 						    		   }
 
 							       // filtre par cod prj et commercial et magasin et client.  AFG
 							       if(!numLot.equals("undefined") && !client.equals("undefined") && annee.equals("undefined") && !magasin.equals("undefined") && !com.equals("undefined") && cp.equals("undefined")){
 
-						    		   if(magasin.equals("Stock commercial")) {
-						    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-						    		   }
-						    	   	else {
+						    		  
 							    	   
 							        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byCommercial(com)).and(StockProjetSpecification.byNumLot(numLot)).and(StockProjetSpecification.byClient(client)));
-							       }
+							       
 						    		   }
 
 							       // filtre par cod prj et commercial et magasin et client.  AFG
 							       if(!numLot.equals("undefined") && !client.equals("undefined") && !annee.equals("undefined") && !magasin.equals("undefined") && !com.equals("undefined") && cp.equals("undefined")){
 
-						    		   if(magasin.equals("Stock commercial")) {
-						    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-						    		   }
-						    	   	else {
 							    	   
 							        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byCommercial(com)).and(StockProjetSpecification.byNumLot(numLot)).and(StockProjetSpecification.byClient(client)).and(StockProjetSpecification.byAnnee(annee)));
-							       }
+							       
 						    		   }
 							       
 							       
@@ -379,14 +342,10 @@ public class StockProjetServiceImp implements StockProjetService {
 										       // filtre par cdp et magasin.  AFG
 										       if(numLot.equals("undefined") && client.equals("undefined") && annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined") && !cp.equals("undefined")){
 
-									    		   if(magasin.equals("Stock commercial")) {
-									    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-									    		   }
-									    	   	else {
+									    	
 										    	   
 										        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byChefProjet(cp)));
-										       }
+										       
 									    		   }
 
 										        // filtre par cdp et année et numlot.  FG
@@ -405,14 +364,10 @@ public class StockProjetServiceImp implements StockProjetService {
 												       // filtre par année et cdp et magasin.  AFG
 												       if(numLot.equals("undefined") && client.equals("undefined") && !annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined") && !cp.equals("undefined")){
 
-											    		   if(magasin.equals("Stock commercial")) {
-											    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-											    		   }
-											    	   	else {
+											    		 
 												    	   
 												        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byChefProjet(cp)).and(StockProjetSpecification.byAnnee(annee)));
-												       }
+												       
 											    		   }
 												       
 												        // filtre par cdp et code prj et client.  FG
@@ -424,67 +379,46 @@ public class StockProjetServiceImp implements StockProjetService {
 													       // filtre par cod prj et cdp et magasin.  AFG
 													       if(!numLot.equals("undefined") && client.equals("undefined") && annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined") && !cp.equals("undefined")){
 
-												    		   if(magasin.equals("Stock commercial")) {
-												    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-												    		   }
-												    	   	else {
+												    		
 													    	   
 													        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byChefProjet(cp)).and(StockProjetSpecification.byNumLot(numLot)));
-													       }
+													       
 												    		   }	
 													       
 													       // filtre par client et cdp et magasin.  AFG
 													       if(numLot.equals("undefined") && !client.equals("undefined") && annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined") && !cp.equals("undefined")){
 
-												    		   if(magasin.equals("Stock commercial")) {
-												    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-												    		   }
-												    	   	else {
+												    		
 													    	   
 													        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byChefProjet(cp)).and(StockProjetSpecification.byClient(client)));
-													       }
+													       
 												    		   }
 													       
 													       // filtre par année et cdp et magasin et client.  AFG
 													       if(numLot.equals("undefined") && !client.equals("undefined") && !annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined") && !cp.equals("undefined")){
 
-												    		   if(magasin.equals("Stock commercial")) {
-												    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-												    		   }
-												    	   	else {
+												    		
 													    	   
 													        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byChefProjet(cp)).and(StockProjetSpecification.byAnnee(annee)).and(StockProjetSpecification.byClient(client)));
-													       }
+													       
 												    		   }
 
 													       // filtre par cod prj et cdp et magasin et client.  AFG
 													       if(!numLot.equals("undefined") && !client.equals("undefined") && annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined") && !cp.equals("undefined")){
 
-												    		   if(magasin.equals("Stock commercial")) {
-												    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-												    		   }
-												    	   	else {
+												    	
 													    	   
 													        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byChefProjet(cp)).and(StockProjetSpecification.byNumLot(numLot)).and(StockProjetSpecification.byClient(client)));
-													       }
+													       
 												    		   }
 
 													       // filtre par cod prj et cdp et magasin et client.  AFG
 													       if(!numLot.equals("undefined") && !client.equals("undefined") && !annee.equals("undefined") && !magasin.equals("undefined") && com.equals("undefined") && !cp.equals("undefined")){
 
-												    		   if(magasin.equals("Stock commercial")) {
-												    				return stockProjetRepository.getStockProjetByFiltre2(numLot,client,annee,com,cp);
-
-												    		   }
-												    	   	else {
-													    	   
+		
 													        return stockProjetRepository.findAll(StockProjetSpecification.byMagasin(magasin).and(StockProjetSpecification.byChefProjet(cp)).and(StockProjetSpecification.byNumLot(numLot)).and(StockProjetSpecification.byClient(client)).and(StockProjetSpecification.byAnnee(annee)));
 													       }
-												    		   }								     
+												    		   								     
 							       
 	 
 		return stockProjetRepository.getStockProjetByFiltre(numLot,client,annee,magasin,com,cp);
@@ -500,7 +434,7 @@ public class StockProjetServiceImp implements StockProjetService {
 
 		ResultSet rs1 = null;
 		try {
-			String req1 = "SELECT * FROM DB_MUNISYS.\"V_STKPRJ\" ";
+			String req1 = "SELECT * FROM DB_MUNISYS.\"V_STK_TYP\" ";
 			rs1 = DBA.request(req1);
 			java.sql.ResultSetMetaData rsmd = rs1.getMetaData();
 			for (int columnCount = rsmd.getColumnCount(), i = 1; i <= columnCount; ++i) {
@@ -553,15 +487,18 @@ public class StockProjetServiceImp implements StockProjetService {
 	
 				if (rs1.getString(8) != null && !rs1.getString(8).equals("null")) {
 				
-						p.setMagasin(rs1.getString(8));
+						p.setType_magasin(rs1.getString(8));
 
 					
 				}
 	
 
+
 				if (rs1.getString(9) != null && !rs1.getString(9).equals("null")) {
-					p.setMontant(rs1.getDouble(9));
-				}
+				
+						p.setMontant(rs1.getDouble(9));
+					}
+				
 				produits.add(p);
 
 			}

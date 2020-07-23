@@ -49,6 +49,12 @@ public class ProjetSpecification {
 	     };
 	  }
 	
+	public static Specification<Projet> byType(String[] type) {
+	     return (root, query, cb) -> {
+	         return root.get("type").in(type);
+	     };
+	  }
+	
 	public static Specification<Projet> isNotAffecte() {
 		
 	     return (root, query, cb) -> {

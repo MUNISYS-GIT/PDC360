@@ -152,10 +152,12 @@ public class EtatLvSvcApplication extends SpringBootServletInitializer implement
 		System.out.println("run");
 		
 		
-		//EtatLvSvcApplication.loadProduitFromSap();
+		//EtatLvSvcApplication.loadProduitDEPFromSap();
+		//EtatLvSvcApplication.loadStockFromSap();
 		//commandeFournisseurServiceStatic.loadCommandeFournisseurFromSap();
-		//EtatLvSvcApplication.loadProduitFromSap();
+		//EtatLvSvcApplication.loadFromSap3();
 		//factureServiceStatic.loadFactureFromSap2();
+		//EtatLvSvcApplication.loadFromSap3();
 		//EtatLvSvcApplication.loadContrat();
 		//EtatLvSvcApplication.factureServiceStatic.loadFactureFromSapByContrat(1L);
 		//System.out.println("end");
@@ -195,6 +197,15 @@ public class EtatLvSvcApplication extends SpringBootServletInitializer implement
 		loadDocumentsFromSap();
 		//LOGGER.debug("ENDING TASK Documents CRON ");
 	}
+	
+	@Scheduled(cron = "0 0 13 20 * *")
+	public static void loadFromSap3() {
+		//LOGGER.debug("STARTING TASK Projetcts CRON ");
+		// loadProjetsFromSap();
+		etatProjetServiceStatic.loadProjetsDepFromSap();
+		// loadDocumentsFromSap();
+		//LOGGER.debug("ENDING TASK Projects CRON ");
+	}
 
 	@Scheduled(cron = "0 0 21 * * *")
 	public static void loadContrat() {
@@ -220,9 +231,11 @@ public class EtatLvSvcApplication extends SpringBootServletInitializer implement
 		//LOGGER.debug("ENDING TASK Produits CRON ");
 	}
 	
-	@Scheduled(cron = "0 0 1 * * *")
-	public static void loadStockFromSap() {
+
 	
+	@Scheduled(cron = "0 0 13 10 * *")
+	public static void loadStockFromSap() {
+		System.out.println("stock update");
 		EtatLvSvcApplication.stockProjetServiceStatic.loadStockFromSap();
 		loadFromSap();
 	}
