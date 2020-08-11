@@ -128,8 +128,7 @@ public class EtatLvSvcApplication extends SpringBootServletInitializer implement
 		LOGGER.warn("Strat app warn");
 		LOGGER.debug("Strat app");
 		SpringApplication.run((Class) EtatLvSvcApplication.class, args);
-		loadProduitFromSap2();
-		loadFromSap3();
+
 	}
 
 	@PostConstruct
